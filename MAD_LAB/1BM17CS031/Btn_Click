@@ -1,0 +1,67 @@
+package com.example.hritik;
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.graphics.Color;
+import android.widget.TextView;
+
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+
+public class MainActivity extends AppCompatActivity {
+    int font=30;
+    int ch=1;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        final TextView t= (TextView) findViewById(R.id.textView);
+        Button btn1 =findViewById(R.id.button);
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                t.setTextSize(font);
+                font = font + 5;
+                if(font == 50)
+                    font = 30;
+            }
+        });
+
+        Button btn2 = findViewById(R.id.button2);
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch(ch)
+                {
+                    case 1:
+                        t.setTextColor(Color.BLACK);
+                        break;
+                    case 2:
+                        t.setTextColor(Color.YELLOW);
+                        break;
+                    case 3:
+                        t.setTextColor(Color.DKGRAY);
+                        break;
+                    case 4:
+                        t.setTextColor(Color.RED);
+                        break;
+                    case 5:
+                        t.setTextColor(Color.DKGRAY);
+                        break;
+
+                }
+                ch ++;
+                if (ch ==6)
+                {
+                    ch =1;
+                }
+
+
+            }
+        });
+    }
+}
