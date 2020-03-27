@@ -1,162 +1,111 @@
-import android.app.Activity;
-import android.app.AlertDialog.Builder;
-import android.content.Context;
+package com.example.lab6;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-public class MainActivity extends Activity implements OnClickListener
-{
-EditText Rollno,Name,Marks;
-Button Insert,Delete,Update,View,ViewAll;
-SQLiteDatabase db;
-/** Called when the activity is first created. */
-@Override
-public void onCreate(Bundle savedInstanceState)
-{
-super.onCreate(savedInstanceState);
-setContentView(R.layout.activity_main);
-Rollno=(EditText)findViewById(R.id.Rollno);
-Name=(EditText)findViewById(R.id.Name);
-Marks=(EditText)findViewById(R.id.Marks);
-Insert=(Button)findViewById(R.id.Insert);
-Delete=(Button)findViewById(R.id.Delete);
-Update=(Button)findViewById(R.id.Update);
-View=(Button)findViewById(R.id.View);
-ViewAll=(Button)findViewById(R.id.ViewAll);
-Insert.setOnClickListener(this);
-Delete.setOnClickListener(this);
-Update.setOnClickListener(this);
-View.setOnClickListener(this);
-ViewAll.setOnClickListener(this);
-// Creating database and table
-db=open Or CreateDatabase("StudentDB", Context.MODE_PRIVATE, null);
-db.execSQL("CREATE TABLE IF NOT EXISTS student(rollno VARCHAR,name
-VARCHAR,marks VARCHAR);");
-}
-public void onClick(View view)
-{
-// Inserting a record to the Student table
-if(view==Insert)
-{
-// Checking for empty fields
+import android.widget.Toast;
 
-if(Rollno.getText().toString().trim().length()==0||
-Name.getText().toString().trim().length()==0||
-Marks.getText().toString().trim().length()==0)
-{
-showMessage("Error", "Please enter all values");
-return;
-}
-db.execSQL("INSERT INTO student VALUES('"+Rollno.getText()+"','"+Name.getText()+
-"','"+Marks.getText()+"');");
-showMessage("Success", "Record added");
-clearText();
-}
-// Deleting a record from the Student table
-if(view==Delete)
-{
-// Checking for empty roll number
-if(Rollno.getText().toString().trim().length()==0)
-{
-showMessage("Error", "Please enter Rollno");
-return;
-}
-Cursor c=db.rawQuery("SELECT * FROM student WHERE
-rollno='"+Rollno.getText()+"'", null);
-if(c.moveToFirst())
-{
-db.execSQL("DELETE FROM student WHERE rollno='"+Rollno.getText()+"'");
-showMessage("Success", "Record Deleted");
-}
-else
-{
-showMessage("Error", "Invalid Rollno");
-}
-clearText();
-}
-// Updating a record in the Student table
-if(view==Update)
-{
-// Checking for empty roll number
-if(Rollno.getText().toString().trim().length()==0)
-{
-showMessage("Error", "Please enter Rollno");
-return;
-}
-Cursor c=db.rawQuery("SELECT * FROM student WHERE
-rollno='"+Rollno.getText()+"'", null);
-if(c.moveToFirst()) {
+public class MainActivity extends AppCompatActivity {
+    DatabaseHelper myDb;
+    EditText editU,editN,editE,editC;
+    Button btnAddData,btnViewAll,btnDelete,btnViewUpdate;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        myDb = new DatabaseHelper(this);
 
-db.execSQL("UPDATE student SET name='"+ Name.getText() + "',marks='"+ Marks.getText()
-+
-"' WHERE rollno='"+Rollno.getText()+"'");
-showMessage("Success", "Record Modified");
-}
-else{
-showMessage("Error", "Invalid Rollno");
-}
-clearText();
-}
-// Display a record from the Student table
-if(view==View)
-{
-// Checking for empty roll number
-if(Rollno.getText().toString().trim().length()==0)
-{
-showMessage("Error", "Please enter Rollno");
-return;
-}
-Cursor c=db.rawQuery("SELECT * FROM student WHERE
-rollno='"+Rollno.getText()+"'", null);
-if(c.moveToFirst())
-{
-Name.setText(c.getString(1));
-Marks.setText(c.getString(2));
-}
-else
-{
-showMessage("Error", "Invalid Rollno");
-clearText();
-}
-}
-// Displaying all the records
-if(view==ViewAll)
-{
-Cursor c=db.rawQuery("SELECT * FROM student", null);
-if(c.getCount()==0)
-{
-showMessage("Error", "No records found");
-return;
-}
-StringBuffer buffer=newStringBuffer();
-while(c.moveToNext())
-{
-buffer.append("Rollno: "+c.getString(0)+"\n");
-buffer.append("Name: "+c.getString(1)+"\n");
+        editU = (EditText)findViewById(R.id.usn_et);
+        editN = (EditText)findViewById(R.id.name_et);
+        editE = (EditText)findViewById(R.id.email_et);
+        editC = (EditText)findViewById(R.id.cgpa_et);
 
-buffer.append("Marks: "+c.getString(2)+"\n\n");
-}
-showMessage("Student Details", buffer.toString());
-}
-}
-public void showMessage(String title,String message)
-{
-Builder builder=newBuilder(this);
-builder.setCancelable(true);
-builder.setTitle(title);
-builder.setMessage(message);
-builder.show();
-}
-public void clearText()
-{
-Rollno.setText("");
-Name.setText("");
-Marks.setText("");
-Rollno.requestFocus();
-}
+        btnAddData = (Button)findViewById(R.id.insert);
+        btnDelete = (Button)findViewById(R.id.delete);
+        btnViewUpdate = (Button)findViewById(R.id.update);
+        btnViewAll = (Button)findViewById(R.id.viewall);
+
+        insertData();
+        updateData();
+        deleteData();
+        viewAll();
+    }
+    public void deleteData(){
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Integer deletedRows = myDb.deleteDate(editU.getText().toString());
+                if(deletedRows > 0){
+                    Toast.makeText(MainActivity.this,"Data deleted",Toast.LENGTH_LONG).show();
+                    editU.setText("");
+                    editN.setText("");
+                    editE.setText("");
+                    editC.setText("");
+                }
+                else{
+                    Toast.makeText(MainActivity.this,"Data not deleted",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+    public void updateData(){
+        btnViewUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isUpdate = myDb.updateData(editU.getText().toString(),editN.getText().toString(),editE.getText().toString(),editC.getText().toString());
+                if(isUpdate){
+                    Toast.makeText(MainActivity.this,"Data updated",Toast.LENGTH_LONG).show();
+                    editU.setText("");
+                    editN.setText("");
+                    editE.setText("");
+                    editC.setText("");
+                }
+                else{
+                    Toast.makeText(MainActivity.this,"Data not updated",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+    public void insertData(){
+        btnAddData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isInserted = myDb.insertData(editU.getText().toString(),editN.getText().toString(),editE.getText().toString(),editC.getText().toString());
+                if(isInserted){
+                    Toast.makeText(MainActivity.this,"Data inserted",Toast.LENGTH_LONG).show();
+                    editU.setText("");
+                    editN.setText("");
+                    editE.setText("");
+                    editC.setText("");
+                }
+                else{
+                    Toast.makeText(MainActivity.this,"Data not inserted",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+    public void viewAll(){
+        btnViewAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Cursor res = myDb.getAllData();
+                if(res.getCount() == 0){
+                    Toast.makeText(MainActivity.this,"No data found",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                StringBuffer buffer = new StringBuffer();
+                while(res.moveToNext()){
+                    buffer.append("USN: "+ res.getString(0)+"\n");
+                    buffer.append("NAME: "+ res.getString(1)+"\n");
+                    buffer.append("EMAIL: "+ res.getString(2)+"\n");
+                    buffer.append("CGPA: "+ res.getString(3)+"\n\n\n");
+                }
+                Toast.makeText(MainActivity.this,buffer.toString(),Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
 }
