@@ -1,0 +1,30 @@
+use Student
+show dbs
+db
+db.createCollection("StudentDetails");
+db.StudentDetails.insert({rollno:1,age:18,name:"Hritik Shankar",contactno:"9601757458",emailid:"contacthritik@gmail.com"});
+db.StudentDetails.insert({rollno:11,age:18,name:"ABC",contactno:"9123585601",emailid:"ABC@gmail.com"});
+db.StudentDetails.insert({rollno:10,age:19,name:"Abhinav",contactno:"9607852206",emailid:"abhinav@gmail.com"});
+db.StudentDetails.update({rollno:10},{$set:{emailid:"changed@gmail.com"}});
+db.StudentDetails.update({rollno:11},{$set:{name:"FEM"}});
+db.StudentDetails.find()
+
+--------------
+2)
+db.createCollection('Customers')
+db.Customers.insert({_id:1,accBal:100000,accType:"Savings"})
+db.Customers.insert({_id:2,accBal:200000,accType:"Z"})
+db.Customers.insert({_id:3,accBal:300000,accType:"Current"})
+db.Customers.insert({_id:4,accBal:400000,accType:"Z"})
+db.Customers.insert({_id:5,accBal:500000,accType:"Savings"})
+db.Customers.find()
+db.Customers.find({accBal: {$gt: 1200}, accType: {$eq: "Z"}})
+db.Customers.aggregate([
+    {   
+        $group: {
+            _id: "$_id",
+            min_bal: {$min: "$accBal"},
+            max_bal: {$max: "$accBal"}
+        }
+    }
+]);
