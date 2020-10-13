@@ -1,0 +1,50 @@
+use myDB
+db.books.save({_id:1, Category: "Machine Learning", Bookname:"ML", Author:"Anjali", qty:25,price:400,rol:30,pages:350});
+db.books.save({_id:2, Category: "BI", Bookname:"BI Book", Author:"Anjali", qty:25,price:400,rol:11,pages:200});
+db.books.save({_id:3, Category: "Analytics", Bookname:"Anaytics Basics", Author:"Anjali", qty:8,price:500,rol:30,pages:150});
+db.books.save({_id:4, Category: "Visualisation", Bookname:"Visualisation Basics", Author:"Anjali", qty:12,price:325,rol:6,pages:500});
+db.books.save({_id:5, Category: "Visualisation", Bookname:"Visualisation Basics", Author:"Anjali", qty:12,price:325,rol:6,pages:900});
+
+db.books.find().pretty()
+
+var map = function(){
+    var category;
+    if(this.pages>=300)
+        category = "Big books"
+    else
+        category = "Small Books"
+    emit(category, {
+        Bookname : this.Bookname});
+}
+var reduce = function(key, values){
+   return values.length    
+};
+
+db.books.mapReduce(map, reduce, {out: "Bookcategory"})
+db.Bookcategory.find()
+------------
+use test
+mongoimport -d test -c data --type csv --headerline --file "C:\Users\hriti\OneDrive\Desktop\College\DSR Lab\bank-data.csv"
+db.data.find()
+db.data.aggregate([
+    { $group : { _id: null, sum: {$sum:"$age"} } }
+])
+db.MongoDBHandsOn.aggregate([
+    { $group : { _id: "Avg of Age", avg: {$avg:"$age"} } }
+])
+---------
+use myDB
+db.createCollection("Country")
+db.Country.insert({_id:1,Cities:["Bangalore","Chennai"]})
+db.Country.insert({_id:2,Cities:["Hyderabad","Mumbai","Delhi"]})
+db.Country.insert({_id:3,Cities:["rajamundry","jamshedpur","Jodhpur"]})
+db.Country.find()
+db.Country.update({_id:1},{$push:{population:{Bangalore:30,Chennai:45}}})
+db.Country.find()
+db.Country.update({_id:3},{$pop:{Cities:1}})
+db.Country.find()
+db.Country.update({Cities:"Hyderabad"},{$pull:{Cities:'Hyderabad'}})
+db.Country.find()
+db.Country.update({_id:1},{$set:{'Cities.2':'Srinagar'}})
+db.Country.update({_id:2},{$addToSet:{Cities:"Trichi"}})
+db.Country.find()
