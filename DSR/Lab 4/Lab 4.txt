@@ -1,0 +1,37 @@
+buff_tail <- c(10,1,37,5,12)
+garden_bee <- c(8,3,9,6,4)
+red_tail <- c(18,9,12,4, 10)
+carder_bee <- c(8,27,6,32,23)
+honey_bee <- c(12,13,16,9,10)
+names <- list("Thistle", "Vipers", "Golden Rain", "Yell", "PlantX")
+data_frame <- data.frame(buff_tail, garden_bee, red_tail, carder_bee, honey_bee)
+matrix <- data.matrix(data_frame)
+rownames(matrix) <- names
+matrix
+#####################3
+integers=c(20,540,530)
+strings=c("abc","def","fgh")
+real_numbers=c(-13.45,51.25,71.2)
+
+list1=list(integers,strings,real_numbers)
+names(list1)=c("Integers","Strings","Real numbers")
+list1
+########################
+getwd()
+data<-read.csv("Churn_Modelling.csv")
+data$EstimatedSalary
+min(data$EstimatedSalary)
+max(data$EstimatedSalary)
+income_group<-vector(mode="character",length=length(data$EstimatedSalary))
+income_group
+income_group[data$EstimatedSalary<10000]<-"Low"
+income_group
+income_group[data$EstimatedSalary>=10000 & data$EstimatedSalary < 100000]<-"middle"
+income_group[data$EstimatedSalary>100000]<-"High"
+income_group
+spender<-factor(income_group,levels=c("Low","middle","High"),ordered=TRUE)
+spender
+bk<-cbind(data,spender)
+bk
+write.csv(bk,'exportNewData.csv',row.names = FALSE)
+##############################################
