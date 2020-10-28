@@ -1,0 +1,22 @@
+empid<-c(1,2,3,4,5,6,7,8,9,10)
+salary<-c(40000,42000,45000,37000,56000,60000,80000,25000,30000,36000)
+martialStatus<-c("M","B","B","B","M","M","M","B","B","M")
+df<-data.frame(empid,salary,martialStatus)
+boxplot(salary~martialStatus,data=df)
+#################
+
+library(ggplot2)
+set.seed(100)
+x<-rnorm(100,mean=0,sd=1)
+x
+boxplot(x)
+
+x<-seq(2,50,2)
+x
+y<-seq(32,80,2)
+y
+dat<-as.data.frame(cbind(x,y))
+View(dat)
+boxplot(x,y,xlab= 'x Axis', ylab = 'y Axis', col='blue')
+ggplot()+geom_point(data=dat, aes(x=x,y=y),size=3, color="blue")+ggtitle("Title")+labs(y= "y axis ", x = "x axis ")
+###############
