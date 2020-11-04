@@ -1,0 +1,12 @@
+#######  2 #######
+library(gcookbook)
+library(ggplot2)
+str(cabbage_exp)
+mtcars$am <-factor(mtcars$am)
+mtcars$cyl<-factor(mtcars$cyl)
+dotchart(mtcars$mpg, labels = row.names(mtcars),cex = 0.6, xlab = "mpg")
+#############  1  ################
+str(cabbage_exp)
+df = cabbage_exp
+head(df)
+barplot(Weight ~ Cultivar+Date, data=df, xlab = "Date", ylab = "weight", beside=TRUE, legend = TRUE,col=c("pink","cyan"))
